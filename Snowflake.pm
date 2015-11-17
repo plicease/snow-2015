@@ -49,6 +49,7 @@ package Snowflake {
     #say "gluCylinder($q, $radius, 0.0, $height, $slices, $stacks);";
     #gluCylinder($q, $radius, 0.0, $height, $slices, $stacks);
     #glutSolidCone($radius, $height, $slices, $stacks);
+    glEnable(GL_COLOR_MATERIAL);
     glutSolidCone($radius, $height, $slices, $stacks);
   }
   

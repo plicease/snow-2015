@@ -25,8 +25,7 @@ package GL {
     GL_MODELVIEW           => 0x1700,
     GL_SRC_ALPHA           => 0x0302,
     GL_ONE_MINUS_SRC_ALPHA => 0x0303,
-    
-    
+    GL_COLOR_MATERIAL      => 0x0B57,
 
     GLU_FILL      => 100012,
     GLU_OUTSIDE   => 100020,
