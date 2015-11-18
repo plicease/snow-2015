@@ -27,9 +27,9 @@ package GL {
     GL_ONE_MINUS_SRC_ALPHA => 0x0303,
     GL_COLOR_MATERIAL      => 0x0B57,
 
-    GLU_FILL      => 100012,
-    GLU_OUTSIDE   => 100020,
-    GLU_SMOOTH    => 100000,
+    #GLU_FILL      => 100012,
+    #GLU_OUTSIDE   => 100020,
+    #GLU_SMOOTH    => 100000,
 
     GLUT_RGB      => 0x0000,
     GLUT_DOUBLE   => 0x0002,
@@ -38,9 +38,15 @@ package GL {
   
   my $ffi = FFI::Platypus->new(
     lib => [
-      find_lib_or_die(lib => 'glut'),
-      find_lib_or_die(lib => 'GLU'),
-      find_lib_or_die(lib => 'GL'),
+      $^O eq 'darwin' ? (
+        "/System/Library/Frameworks/OpenGL.framework/Libraries/libGL.dylib",
+        "/System/Library/Frameworks/OpenGL.framework/Libraries/libGLU.dylib",
+        "/System/Library/Frameworks/GLUT.framework/GLUT",
+      ) : (
+        find_lib_or_die(lib => 'glut'),
+        find_lib_or_die(lib => 'GLU'),
+        find_lib_or_die(lib => 'GL'),
+      )
     ],
   );
 
@@ -49,7 +55,7 @@ package GL {
   $ffi->type('unsigned char' => 'GLboolean');
   $ffi->type('int' => 'GLint');
   $ffi->type('double' => 'GLdouble');
-  $ffi->type('opaque' => 'GLUquadric');
+  #$ffi->type('opaque' => 'GLUquadric');
   $ffi->type('float[]' => 'GLfloat_array');
   $ffi->type('unsigned int' => 'GLbitfield');
   $ffi->type('int' => 'GLsizei');
@@ -75,12 +81,12 @@ package GL {
   $ffi->attach( glBlendFunc => [ 'GLenum', 'GLenum' ] => 'void' );
 
   # GLU
-  $ffi->attach( gluNewQuadric => [] => 'GLUquadric' );
-  $ffi->attach( gluQuadricDrawStyle => ['GLUquadric','GLenum'] => 'void' );
-  $ffi->attach( gluQuadricOrientation => ['GLUquadric','GLenum'] => 'void' );
-  $ffi->attach( gluQuadricNormals => ['GLUquadric','GLenum'] => 'void' );
-  $ffi->attach( gluQuadricTexture => ['GLUquadric','GLboolean'] => 'void' );
-  $ffi->attach( gluCylinder => ['GLUquadric', 'GLdouble', 'GLdouble', 'GLint', 'GLint'] => 'void' );
+  #$ffi->attach( gluNewQuadric => [] => 'GLUquadric' );
+  #$ffi->attach( gluQuadricDrawStyle => ['GLUquadric','GLenum'] => 'void' );
+  #$ffi->attach( gluQuadricOrientation => ['GLUquadric','GLenum'] => 'void' );
+  #$ffi->attach( gluQuadricNormals => ['GLUquadric','GLenum'] => 'void' );
+  #$ffi->attach( gluQuadricTexture => ['GLUquadric','GLboolean'] => 'void' );
+  #$ffi->attach( gluCylinder => ['GLUquadric', 'GLdouble', 'GLdouble', 'GLint', 'GLint'] => 'void' );
   $ffi->attach( gluPerspective => ['GLdouble','GLdouble','GLdouble','GLdouble'] => 'void' );
   
   # GLUT
@@ -97,10 +103,10 @@ package GL {
   $ffi->attach( glutMainLoop        => [ ] => 'void' );
   $ffi->attach( glutSwapBuffers     => [] => 'void' );
   $ffi->attach( glutPostRedisplay   => [] => 'void' );
-  $ffi->attach( glutSolidCube       => [ 'GLdouble' ] => 'void' );
-  $ffi->attach( glutSolidCone       => [ 'GLdouble', 'GLdouble', 'GLint', 'GLint' ] => 'void' );
-  $ffi->attach( glutWireCube        => [ 'GLdouble' ] => 'void' );
-  $ffi->attach( glutWireCone        => [ 'GLdouble', 'GLdouble', 'GLint', 'GLint' ] => 'void' );
+  #$ffi->attach( glutSolidCube       => [ 'GLdouble' ] => 'void' );
+  #$ffi->attach( glutSolidCone       => [ 'GLdouble', 'GLdouble', 'GLint', 'GLint' ] => 'void' );
+  #$ffi->attach( glutWireCube        => [ 'GLdouble' ] => 'void' );
+  $ffi->attach( glutSolidCone        => [ 'GLdouble', 'GLdouble', 'GLint', 'GLint' ] => 'void' );
   
   $ffi->attach( glutDisplayFunc     => [ '()->void' ]        => 'void' => sub {
     my($xsub, $callback) = @_;
@@ -117,11 +123,11 @@ package GL {
     state $closure = $ffi->closure($callback);
     $xsub->($closure);
   });
-  $ffi->attach( glutMotionFunc      => [ '(int,int)->void' ] => 'void' => sub {
-    my($xsub, $callback) = @_;
-    state $closure = $ffi->closure($callback);
-    $xsub->($closure);
-  });
+  #$ffi->attach( glutMotionFunc      => [ '(int,int)->void' ] => 'void' => sub {
+  #  my($xsub, $callback) = @_;
+  #  state $closure = $ffi->closure($callback);
+  #  $xsub->($closure);
+  #});
   
   our @EXPORT = (grep /^gl/i, keys %GL::);
 }
