@@ -6,7 +6,7 @@ use Snowflake;
 
 glutInit(@ARGV);
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-glutInitWindowSize(500,500);
+glutInitWindowSize(1500,500);
 glutCreateWindow('snowflake');
 glLightfv(GL_LIGHT0, GL_DIFFUSE, [1.0, 1.0, 1.0, 1.0]);
 glLightfv(GL_LIGHT0, GL_POSITION, [1.0, 1.0, 1.0, 0.0]);
@@ -14,28 +14,39 @@ glEnable(GL_LIGHT0);
 glEnable(GL_LIGHTING);
 glEnable(GL_CULL_FACE);
 glShadeModel(GL_SMOOTH);
-glClearColor(0.0, 0.0, 0.0, 0.0);
+glClearColor(1.0, 1.0, 1.0, 0.0);
 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 glEnable(GL_DEPTH_TEST);
 
 
-my $flake = Snowflake->new_random( z => -5.0 );
+my @flakes = (
+  Snowflake->new_random( z => -5.0, x => +2.0 ),
+  Snowflake->new_random( z => -5.0, x => +0.0 ),
+  Snowflake->new_random( z => -5.0, x => -2.0 ),
+);
 
 sub display {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
 
-  $flake->draw;
+  $_->draw for @flakes;
 
   glFlush();
   glutSwapBuffers();
 }
 
 sub idle {
-  $flake->xspin($flake->xspin + 0.3);
-  $flake->yspin($flake->xspin + 0.6);
+  $flakes[0]->xspin($flakes[0]->xspin + 0.3);
+  $flakes[0]->yspin($flakes[0]->yspin + 0.6);
+
+  $flakes[1]->xspin($flakes[1]->xspin + 0.3);
+  $flakes[1]->zspin($flakes[1]->zspin + 0.6);
+
+  $flakes[2]->yspin($flakes[2]->yspin + 0.3);
+  $flakes[2]->zspin($flakes[2]->zspin + 0.6);
+
   glutPostRedisplay();
 }
 
