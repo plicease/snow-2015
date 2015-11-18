@@ -35,30 +35,15 @@ package Snowflake {
   
   sub draw_solid_cone {
     my($self, $radius, $height, $slices, $stacks) = @_;
-
-    #state $q;
-    #unless($q)
-    #{
-    #  $q = gluNewQuadric();
-    #  gluQuadricDrawStyle($q, GLU_FILL);
-    #  gluQuadricOrientation($q, GLU_OUTSIDE);
-    #  gluQuadricNormals($q, GLU_SMOOTH);
-    #  gluQuadricTexture($q, GL_FALSE);
-    #}
-    #
-    #say "gluCylinder($q, $radius, 0.0, $height, $slices, $stacks);";
-    #gluCylinder($q, $radius, 0.0, $height, $slices, $stacks);
-    #glutSolidCone($radius, $height, $slices, $stacks);
-    glEnable(GL_COLOR_MATERIAL);
     glutSolidCone($radius, $height, $slices, $stacks);
   }
   
   sub draw_twig {
-    my($self, $height, $width, $sides) = @_;
+    my($self, $height, $base, $sides) = @_;
 
     glPushMatrix();
       glRotated(-90.0, 1.0, 0.0, 0.0);
-      $self->draw_solid_cone($width, $height, $sides, 5);
+      glutSolidCone($base, $height, $sides, 5);
     glPopMatrix();
   }
   
@@ -94,8 +79,9 @@ package Snowflake {
       glRotated($self->yspin, 0.0, 1.0, 0.0);
       glRotated($self->zspin, 0.0, 0.0, 1.0);
       
-      glColor4d(0.60, 0.86, 1.0, 0.25);
+      glEnable(GL_COLOR_MATERIAL);
       glEnable(GL_BLEND);
+      glColor4d(0.60, 0.86, 1.0, 0.25);
 
       for(1..$self->num_twigs) {
         glPushMatrix();
@@ -126,6 +112,7 @@ package Snowflake {
       }
       
       glDisable(GL_BLEND);
+      glDisable(GL_COLOR_MATERIAL);
     
     glPopMatrix();
   }
