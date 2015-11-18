@@ -8,7 +8,7 @@ glutInit(@ARGV);
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 glutInitWindowSize(1500,500);
 glutCreateWindow('snowflake');
-glLightfv(GL_LIGHT0, GL_DIFFUSE, [1.0, 1.0, 1.0, 1.0]);
+glLightfv(GL_LIGHT0, GL_DIFFUSE, [.9, .9, 1.0, 1.0]);
 glLightfv(GL_LIGHT0, GL_POSITION, [1.0, 1.0, 1.0, 0.0]);
 glEnable(GL_LIGHT0);
 glEnable(GL_LIGHTING);
@@ -18,7 +18,6 @@ glClearColor(1.0, 1.0, 1.0, 0.0);
 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 glEnable(GL_DEPTH_TEST);
-
 
 my @flakes = map { Snowflake->new(z => -5.0, x => $_) } ( 2.0, 0.0, -2.0 );
 

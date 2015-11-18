@@ -57,23 +57,30 @@ package Snowflake {
   }
   
   sub draw_arm {
-    my($self, $size, $left, $count) = @_;
+    my($self, $size, $left, $segments) = @_;
+
+    $segments //= $self->segments;
     
     glPushMatrix();
 
       glPushMatrix();
 
         glRotated(30, 0.0, 0.0, 1.0);
-        $self->draw_arm($size/1.5, $size, int($count/2)) if $count > 1;
+        $self->draw_arm($size/1.5, $size, int($segments/2)) if $segments > 1;
         $self->draw_twig(PINKIE_RADIUS, $size, 6);
         glRotated(-60, 0.0, 0.0, 1.0);
-        $self->draw_arm($size/1.5, $size, int($count/2)) if $count > 1;
+        $self->draw_arm($size/1.5, $size, int($segments/2)) if $segments > 1;
         $self->draw_twig(PINKIE_RADIUS, $size, 6);
         
       glPopMatrix();
       
-      glTranslated(0.0, $left/($count*.75), 0.0);
-      $self->draw_arm($size / 1.5, $left-$left/($count*.75), int($count-1)) if $count > 1;
+      glTranslated(0.0, $left/($segments*.75), 0.0);
+
+      $self->draw_arm(
+        $size / 1.5,
+        $left-$left/($segments*.75), 
+        int($segments-1)
+      ) if $segments > 1;
 
     glPopMatrix();
   }
@@ -90,13 +97,13 @@ package Snowflake {
       
       glEnable(GL_COLOR_MATERIAL);
       glEnable(GL_BLEND);
-      glColor4d(0.60, 0.86, 1.0, 0.25);
+      glColor4d(0.60, 0.86, 1.0, 0.35);
 
       for(1..$self->num_twigs) {
         glPushMatrix();
         
           glRotated(360/$self->num_twigs*($_-1), 0.0, 0.0, 1.0);
-          $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
+          $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
           $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
         
         glPopMatrix();
@@ -105,15 +112,15 @@ package Snowflake {
       glPushMatrix();
           
         glRotated(90, 1.0, 0.0, 0.0);
-        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
+        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
         glRotated(90, 0.0, 1.0, 0.0);
-        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
+        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
         $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
           
         glRotated(-180, 1.0, 0.0, 0.0);
-        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
+        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
         glRotated(90, 0.0, 1.0, 0.0);
-        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
+        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
         $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
           
       glPopMatrix();
