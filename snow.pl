@@ -20,11 +20,7 @@ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 glEnable(GL_DEPTH_TEST);
 
 
-my @flakes = (
-  Snowflake->new_random( z => -5.0, x => +2.0 ),
-  Snowflake->new_random( z => -5.0, x => +0.0 ),
-  Snowflake->new_random( z => -5.0, x => -2.0 ),
-);
+my @flakes = map { Snowflake->new(z => -5.0, x => $_) } ( 2.0, 0.0, -2.0 );
 
 sub display {
 

@@ -12,26 +12,35 @@ package Snowflake {
     PINKIE_RADIUS => 0.025,
   };
   
-  has num_twigs     => (is => 'ro', isa => 'Num', required => 1 );
-  has pinkie_length => (is => 'ro', isa => 'Num', required => 1  );
-  has arm_length    => (is => 'ro', isa => 'Num', required => 1  );
-  has segments      => (is => 'ro', isa => 'Int', required => 1  );
-  has is_3d         => (is => 'ro', isa => 'Int', required => 1  );
+  has num_twigs => (
+    is => 'ro', 
+    isa => 'Num', 
+    default => sub { int(rand 4) + 3 },
+  );
+
+  has pinkie_length => (
+    is => 'ro',
+    isa => 'Num',
+    default => sub { 0.5 + (rand)/2.0 }
+  );
+
+  has arm_length => (
+    is => 'ro',
+    isa => 'Num',
+    default => sub { 1.0 + (rand) },
+  );
   
-  has $_ => (is => 'rw', isa => 'Num', default => 0.0 ) for qw( x y z );
-  has $_ => (is => 'rw', isa => 'Num', default => 0.0 ) for qw( xspin yspin zspin );
+  has segments => (
+    is => 'ro',
+    isa => 'Int',
+    default => sub { int(rand 4) + 2 },
+  );
   
-  sub new_random {
-    my($class, %other) = @_;
-    $class->new(
-      num_twigs     => int(rand 4) + 3,
-      arm_length    => 1.0 + (rand),
-      pinkie_length => 0.5 + (rand)/2.0,
-      segments      => int(rand 4)+2,
-      is_3d         => int(rand 3)+2,
-      %other,
-    );
-  }
+  has $_ => (is => 'rw', isa => 'Num', default => 0.0 )
+    for qw( x y z );
+  
+  has $_ => (is => 'rw', isa => 'Num', default => 0.0 )
+    for qw( xspin yspin zspin );
   
   sub draw_solid_cone {
     my($self, $radius, $height, $slices, $stacks) = @_;
@@ -93,24 +102,22 @@ package Snowflake {
         glPopMatrix();
       }
       
-      if($self->is_3d) {
-        glPushMatrix();
+      glPushMatrix();
           
-          glRotated(90, 1.0, 0.0, 0.0);
-          $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
-          glRotated(90, 0.0, 1.0, 0.0);
-          $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
-          $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
+        glRotated(90, 1.0, 0.0, 0.0);
+        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
+        glRotated(90, 0.0, 1.0, 0.0);
+        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
+        $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
           
-          glRotated(-180, 1.0, 0.0, 0.0);
-          $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
-          glRotated(90, 0.0, 1.0, 0.0);
-          $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
-          $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
+        glRotated(-180, 1.0, 0.0, 0.0);
+        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
+        glRotated(90, 0.0, 1.0, 0.0);
+        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25, $self->segments);
+        $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
           
-        glPopMatrix();
-      }
-      
+      glPopMatrix();
+
       glDisable(GL_BLEND);
       glDisable(GL_COLOR_MATERIAL);
     
