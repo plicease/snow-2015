@@ -13,13 +13,11 @@ use constant {
 
 my $ffi = $GL::ffi;
   
-# GLUT
-$ffi->attach( [ glutInit => '_glutInit' ] => ['int*', 'string_array' ] => 'void' );
-  
-sub glutInit {
-  my $size = scalar @_;
-  _glutInit(\$size, \@_);
-}
+$ffi->attach( glutInit => ['int*', 'string_array' ] => 'void' => sub {
+  my($xsub, @args) = @_;
+  my $size = scalar @args;
+  $xsub->(\$size, \@args);
+});
   
 $ffi->attach( glutInitDisplayMode => ['unsigned int'] => 'void' );
 $ffi->attach( glutInitWindowSize  => ['int', 'int']   => 'void' );
