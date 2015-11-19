@@ -55,18 +55,26 @@ $ffi->attach( glDisable    => ['GLenum'] => 'void' );
 $ffi->attach( glPushMatrix => [] => 'void' );
 $ffi->attach( glPopMatrix  => [] => 'void' );
 $ffi->attach( glFlush      => [] => 'void' );
-$ffi->attach( glRotated    => [ 'GLdouble', 'GLdouble', 'GLdouble', 'GLdouble' ] => 'void' );
-$ffi->attach( glTranslated => ['GLdouble', 'GLdouble', 'GLdouble' ] => 'void' );
-$ffi->attach( glColor4d    => [ 'GLdouble', 'GLdouble', 'GLdouble', 'GLdouble' ] => 'void' );
-$ffi->attach( glColor3d    => [ 'GLdouble', 'GLdouble', 'GLdouble' ] => 'void' );
-$ffi->attach( glLightfv => [ 'GLenum', 'GLenum', 'GLfloat_array' ] => 'void' );
-$ffi->attach( glClear => [ 'GLbitfield' ] => 'void' );
-$ffi->attach( glLoadIdentity => [] => 'void' );
-$ffi->attach( glScaled => [ 'GLdouble', 'GLdouble', 'GLdouble' ] => 'void' );
-$ffi->attach( glClearColor => ['float', 'float', 'float', 'float' ] => 'void' );
+$ffi->attach( glRotated    => [ 'GLdouble', 'GLdouble', 
+                                'GLdouble', 'GLdouble' ] => 'void' );
+$ffi->attach( glTranslated => ['GLdouble', 'GLdouble', 
+                               'GLdouble' ] => 'void' );
+$ffi->attach( glColor4d    => [ 'GLdouble', 'GLdouble', 
+                                'GLdouble', 'GLdouble' ] => 'void' );
+$ffi->attach( glColor3d    => [ 'GLdouble', 'GLdouble', 
+                                'GLdouble' ] => 'void' );
+$ffi->attach( glLightfv    => [ 'GLenum', 'GLenum', 
+                                'GLfloat_array' ] => 'void' );
+$ffi->attach( glClear      => [ 'GLbitfield' ] => 'void' );
+$ffi->attach( glScaled     => [ 'GLdouble', 'GLdouble', 
+                                'GLdouble' ] => 'void' );
+$ffi->attach( glClearColor => ['float', 'float', 
+                               'float', 'float' ] => 'void' );
 $ffi->attach( glMatrixMode => [ 'GLenum' ] => 'void' );
-$ffi->attach( glViewport => [ 'GLint', 'GLint', 'GLsizei', 'GLsizei' ] => 'void' );
-$ffi->attach( glBlendFunc => [ 'GLenum', 'GLenum' ] => 'void' );
+$ffi->attach( glViewport   => [ 'GLint', 'GLint', 
+                                'GLsizei', 'GLsizei' ] => 'void' );
+$ffi->attach( glBlendFunc  => [ 'GLenum', 'GLenum' ] => 'void' );
+$ffi->attach( glLoadIdentity => [] => 'void' );
 
 our @EXPORT = (grep /^(gl|GL_)/i, keys %GL::);
 
