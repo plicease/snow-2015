@@ -171,8 +171,9 @@ using L<FFI::Raw>, which at the time was the only practical FFI
 available on CPAN.
 
 Over our long summer break this year, an acquatic mammal who was 
-visiting from down under introduced us to L<FFI::Platypus>.  Here are my 
-bindings for the base OpenGL library:
+visiting from down under introduced us to L<FFI::Platypus>.  We liked it 
+so much we have largely migrated to it for all of our existing FFI code. 
+Here are my bindings for the base OpenGL library:
 
  package GL;
  
