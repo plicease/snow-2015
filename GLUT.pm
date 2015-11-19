@@ -28,17 +28,19 @@ $ffi->attach( glutPostRedisplay   => [] => 'void' );
 $ffi->attach( glutSolidCone        => [ 'GLdouble', 'GLdouble', 
                                         'GLint', 'GLint' ] => 'void' );
   
-$ffi->attach( glutDisplayFunc     => [ '()->void' ]        => 'void' => sub {
+$ffi->attach( glutDisplayFunc => [ '()->void' ] => 'void' => sub {
   my($xsub, $callback) = @_;
   state $closure = $ffi->closure($callback);
   $xsub->($closure);
 });
-$ffi->attach( glutIdleFunc        => [ '()->void' ]        => 'void' => sub {
+
+$ffi->attach( glutIdleFunc => [ '()->void' ] => 'void' => sub {
   my($xsub, $callback) = @_;
   state $closure = $ffi->closure($callback);
   $xsub->($closure);
 });
-$ffi->attach( glutReshapeFunc     => [ '(int,int)->void' ] => 'void' => sub {
+
+$ffi->attach( glutReshapeFunc => [ '(int,int)->void' ] => 'void' => sub {
   my($xsub, $callback) = @_;
   state $closure = $ffi->closure($callback);
   $xsub->($closure);
