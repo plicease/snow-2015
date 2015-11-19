@@ -77,15 +77,9 @@ libraries on that platform.
 
 The next part of the code defines the types used by the library:
 
- $ffi->load_custom_type('FFI::Platypus::Type::StringArray' => 'string_array');
-
-Platypus' type system provides most of the common basic types that you 
-will need.  A few more specalized types require the use of custom types. 
-The first line uses the 'StringArray' custom type.
-
  $ffi->type('unsigned int' => 'GLenum');
 
-The second line defines C<GLenum> used throughout the GL library.  
+This line defines C<GLenum> used throughout the GL library.  
 Although you could just use C<'unsigned int'> throughout your code where 
 GLenum is called for, this makes my code more readable, and it is easier 
 to fix the type in one place if I make a mistake wiht C<GLenum>.
@@ -141,10 +135,64 @@ be put at the bottom of the file because otherwise %GL:: won't be
 populated completely, until after all of the C<attach> methods are 
 called.
 
-The last piece of code is the GLUT bindings.  GLUT provides a simple and 
+The last piece of code is the Glut bindings.  Glut provides a simple and 
 portable OpenGL focused event loop for applications that do not require 
 anything more complicated.
 
 # GLUT.pm
+
+A few things are interesting here.  Firstly, I use the same C<$ffi> 
+object here, mainly because Glut uses a number of GL types.
+
+ my $ffi = $GL::ffi;
+
+Second, the C<glutInit()> takes an array of C strings as its second 
+argument.
+
+ $ffi->load_custom_type('FFI::Platypus::Type::StringArray' => 'string_array');
+
+ $ffi->attach( glutInit => ['int*', 'string_array' ] => 'void' => sub {
+   my($xsub, @args) = @_;
+   my $size = scalar @args;
+   $xsub->(\$size, \@args);
+ });
+
+Platypus' type system provides most of the common basic types that you 
+will need.  A few more specalized types, like arrays of C strings 
+require the use of custom types written in Perl.  Here we are using 
+L<FFI::Platypus::Type::StringArray> which is frequently useful, but not 
+part of the Platypus core.
+
+Also interesting here is that we are using a wrapper (specified as the 
+last argument in the attach call) around the subroutine created by 
+Platypus.  This is an interfacing issue, as in C if you have arrays that 
+can be of varying lengths you need to pass in the size of the array as a 
+separate parameter, but in Perl arrays know how many they contain.
+
+Also the size of the array is passed in as a pointer an integer so that 
+Glut can alter its value.  Although in this particular case we ignore 
+any changes made by Glut, the scalar C<$size> IS updated if C<glutInit> 
+makes a change to its value.  In many use cases this is very useful.
+
+The last thing that I want to point out is the use of closures:
+
+ $ffi->attach( glutDisplayFunc => [ '()->void' ] => 'void' => sub {
+   my($xsub, $callback) = @_;
+   state $closure = $ffi->closure($callback);
+   $xsub->($closure);
+ });
+
+Or calling back into Perl from C.  This is extremly usful, but it is 
+also a little tricky, because of the different ways that Perl and C 
+manage memory.  Essentially it comes down to this, in C you must 
+explicitly allocate and deallocate all memory.  The convention is that 
+the module that allocates a particular object will be responsible for 
+deallocating it.  In Perl the language itself takes responsability for 
+deallocating objects when they are no longer used anywhere in the Perl 
+runtime.  Unfortunately when we create a closure and pass it into Glut 
+code, there is no way for Perl to keep track of wether or not the 
+closure is still in use by Glut!  In this case I save the closure into a 
+C<state> variable, which will keep it in scope for the life of the 
+program (or until C<glutDisplayFunc> is called again).
 
 =cut

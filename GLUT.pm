@@ -3,6 +3,7 @@ package GLUT;
 use strict;
 use warnings;
 use 5.010;
+use GL ();
 use base qw( Exporter );
   
 use constant {
@@ -13,6 +14,8 @@ use constant {
 
 my $ffi = $GL::ffi;
   
+$ffi->load_custom_type('FFI::Platypus::Type::StringArray' => 'string_array');
+
 $ffi->attach( glutInit => ['int*', 'string_array' ] => 'void' => sub {
   my($xsub, @args) = @_;
   my $size = scalar @args;

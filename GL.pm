@@ -40,7 +40,6 @@ our $ffi = FFI::Platypus->new(
   ],
 );
 
-$ffi->load_custom_type('FFI::Platypus::Type::StringArray' => 'string_array');
 $ffi->type('unsigned int' => 'GLenum');
 $ffi->type('unsigned char' => 'GLboolean');
 $ffi->type('int' => 'GLint');
