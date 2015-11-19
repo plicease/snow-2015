@@ -7,11 +7,6 @@ package Snowflake {
   use Moose;
   use GL;
   
-  use constant {
-    ARM_RADIUS    => 0.05,
-    PINKIE_RADIUS => 0.025,
-  };
-  
   has num_twigs => (
     is => 'ro', 
     isa => 'Num', 
@@ -24,7 +19,7 @@ package Snowflake {
     default => sub { 0.5 + (rand)/2.0 }
   );
 
-  has arm_length => (
+  has branch_length => (
     is => 'ro',
     isa => 'Num',
     default => sub { 1.0 + (rand) },
@@ -42,11 +37,6 @@ package Snowflake {
   has $_ => (is => 'rw', isa => 'Num', default => 0.0 )
     for qw( xspin yspin zspin );
   
-  sub draw_solid_cone {
-    my($self, $radius, $height, $slices, $stacks) = @_;
-    glutSolidCone($radius, $height, $slices, $stacks);
-  }
-  
   sub draw_twig {
     my($self, $base, $height, $sides) = @_;
 
@@ -56,7 +46,7 @@ package Snowflake {
     glPopMatrix();
   }
   
-  sub draw_arm {
+  sub draw_branch {
     my($self, $size, $left, $segments) = @_;
 
     $segments //= $self->segments;
@@ -66,17 +56,17 @@ package Snowflake {
       glPushMatrix();
 
         glRotated(30, 0.0, 0.0, 1.0);
-        $self->draw_arm($size/1.5, $size, int($segments/2)) if $segments > 1;
-        $self->draw_twig(PINKIE_RADIUS, $size, 6);
+        $self->draw_branch($size/1.5, $size, int($segments/2)) if $segments > 1;
+        $self->draw_twig(0.025, $size, 6);
         glRotated(-60, 0.0, 0.0, 1.0);
-        $self->draw_arm($size/1.5, $size, int($segments/2)) if $segments > 1;
-        $self->draw_twig(PINKIE_RADIUS, $size, 6);
+        $self->draw_branch($size/1.5, $size, int($segments/2)) if $segments > 1;
+        $self->draw_twig(0.025, $size, 6);
         
       glPopMatrix();
       
       glTranslated(0.0, $left/($segments*.75), 0.0);
 
-      $self->draw_arm(
+      $self->draw_branch(
         $size / 1.5,
         $left-$left/($segments*.75), 
         int($segments-1)
@@ -103,8 +93,8 @@ package Snowflake {
         glPushMatrix();
         
           glRotated(360/$self->num_twigs*($_-1), 0.0, 0.0, 1.0);
-          $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
-          $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
+          $self->draw_branch($self->pinkie_length/1.25, $self->branch_length/1.25);
+          $self->draw_twig(0.05, $self->branch_length/1.25, 12);
         
         glPopMatrix();
       }
@@ -112,16 +102,16 @@ package Snowflake {
       glPushMatrix();
           
         glRotated(90, 1.0, 0.0, 0.0);
-        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
+        $self->draw_branch($self->pinkie_length/1.25, $self->branch_length/1.25);
         glRotated(90, 0.0, 1.0, 0.0);
-        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
-        $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
+        $self->draw_branch($self->pinkie_length/1.25, $self->branch_length/1.25);
+        $self->draw_twig(0.05, $self->branch_length/1.25, 12);
           
         glRotated(-180, 1.0, 0.0, 0.0);
-        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
+        $self->draw_branch($self->pinkie_length/1.25, $self->branch_length/1.25);
         glRotated(90, 0.0, 1.0, 0.0);
-        $self->draw_arm($self->pinkie_length/1.25, $self->arm_length/1.25);
-        $self->draw_twig(ARM_RADIUS, $self->arm_length/1.25, 12);
+        $self->draw_branch($self->pinkie_length/1.25, $self->branch_length/1.25);
+        $self->draw_twig(0.05, $self->branch_length/1.25, 12);
           
       glPopMatrix();
 
