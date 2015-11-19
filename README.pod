@@ -409,4 +409,15 @@ closure is still in use by Glut!  In this case I save the closure into a
 C<state> variable, which will keep it in scope for the life of the 
 program (or until C<glutDisplayFunc> is called again).
 
+Now, finally I have three pretty snowflakes for the holiday party.
+
+=begin html
+
+<img src="screenshot800.png"/>
+
+=end html
+
+My coworker Mr. Lore also enjoyed it as he is a friend of the 
+crystalline entity.
+
 =cut
