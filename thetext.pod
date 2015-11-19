@@ -199,7 +199,7 @@ Now, finally I have three pretty snowflakes for the holiday party.
 
 =begin html
 
-<img src="screenshot800.png"/>
+<center><img src="screenshot800.png"/></center>
 
 =end html
 
