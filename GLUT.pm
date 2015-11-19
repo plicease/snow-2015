@@ -27,7 +27,8 @@ $ffi->attach( glutCreateWindow    => ['string']       => 'int'  );
 $ffi->attach( glutMainLoop        => [ ] => 'void' );
 $ffi->attach( glutSwapBuffers     => [] => 'void' );
 $ffi->attach( glutPostRedisplay   => [] => 'void' );
-$ffi->attach( glutSolidCone        => [ 'GLdouble', 'GLdouble', 'GLint', 'GLint' ] => 'void' );
+$ffi->attach( glutSolidCone        => [ 'GLdouble', 'GLdouble', 
+                                        'GLint', 'GLint' ] => 'void' );
   
 $ffi->attach( glutDisplayFunc     => [ '()->void' ]        => 'void' => sub {
   my($xsub, $callback) = @_;

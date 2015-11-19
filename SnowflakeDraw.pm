@@ -56,7 +56,10 @@ sub draw {
     for(1..$self->num_twigs) {
       glPushMatrix();
         glRotated(360/$self->num_twigs*($_-1), 0.0, 0.0, 1.0);
-        $self->draw_branch($self->pinkie_length/1.25, $self->branch_length/1.25);
+        $self->draw_branch(
+          $self->pinkie_length/1.25, 
+          $self->branch_length/1.25,
+        );
         $self->draw_twig(0.05, $self->branch_length/1.25, 12);
       glPopMatrix();
     }
