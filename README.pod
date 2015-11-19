@@ -417,7 +417,7 @@ Now, finally I have three pretty snowflakes for the holiday party.
 
 =end html
 
-My coworker Mr. Lore also enjoyed it as he is a friend of the 
-crystalline entity.
+My coworker android friend Mr. Lore also enjoyed it reminded him of his 
+friend the crystalline entity.
 
 =cut
