@@ -1,0 +1,150 @@
+=pod
+
+The boss, Mr. Claus asked me to whip up some decorations, and since this 
+is a modern outfit with the largest toy and child database in the world 
+cutting some paper snowflakes just wasn't going to cut it.  I decoded to 
+write a little Perl pogram to render some three dimensional snowflakes.  
+To that end, I started with a model to represent the physical 
+characteristics of each snowflake, using a Moose role.
+
+# include: SnowflakeModel.pm
+
+The model keeps track of the number of branches, and twigs (the "leaf" 
+node, but this being winter time the leaves have obviouslly fallen) and 
+the length of the pinkie twigs which are twigs eminating from the root 
+of te snowflake.
+
+The next step was to write some code to draw the snowflake.  After some 
+tweaking, I decided on a recursive algorithm using OpenGL.
+
+# include: SnowflakeDraw.pm
+
+Now I can combine the model and the draw logic into a single Moose class.
+
+# include: Snowflake.pm
+
+Now if our snowflakes need to work with vendors that don't support 
+OpenGL, we can swap out different draw roles to replace this OpenGL one.
+
+In order to use The GL functions from Perl, I wrote some partial GL 
+bindings for Perl using FFI.  FFI is a technique for calling code in 
+dynamic libraries from a scripting language like Perl without writing 
+XS, which is tied closely to the internal implementation of Perl itself.
+
+We here at North Pole Inc. are big into FFI because we don't have many 
+XS programmers, but we often need to call into libraries written in 
+other languages which don't have XS bindings yet.  Last year we were 
+using L<FFI::Raw>, which at the time was the only practical FFI 
+available on CPAN.
+
+Over our long summer break this year, an acquatic mammal who was 
+visiting from down under introduced us to L<FFI::Platypus>.  Here are my 
+bindings for the base OpenGL library:
+
+# include: GL.pm
+
+After the usual module imports, you can see the first thing that I've 
+defined a number of constants which are used by OpenGL.  For FFI there 
+really isn't any getting around this.  These constants are usually 
+defined in C header (.h) files.  So long as the library is stable and 
+the implementers are not feeling cruel this can be okay.
+
+The next peice of code creates an instance of L<FFI::Platypus> which we 
+will use to create the bindins to the library:
+
+ our $ffi = FFI::Platypus->new(
+   lib => [
+     $^O eq 'darwin' ? (
+       "/System/Library/Frameworks/OpenGL.framework/Libraries/libGL.dylib",
+       "/System/Library/Frameworks/OpenGL.framework/Libraries/libGLU.dylib",
+       "/System/Library/Frameworks/GLUT.framework/GLUT",
+     ) : (
+       find_lib_or_die(lib => 'glut'),
+       find_lib_or_die(lib => 'GLU'),
+       find_lib_or_die(lib => 'GL'),
+     )
+   ],
+ ); 
+
+We need to tell Platypus where to look for functions so we are using 
+L<FFI::ChecKLib>, which is a portable way of searching for system 
+libraries.  We have a mixed environment of OS X and Linux for toy 
+deliveries and testing, so it this had to work on both platforms.  
+Although L<FFI::CheckLib> works on both platforms (and others), the 
+OpenGL libraries on OS X are part of a "framework", which isn't 
+supported by L<FFI::CheckLib> yet, so I hard coded the location of the 
+libraries on that platform.
+
+The next part of the code defines the types used by the library:
+
+ $ffi->load_custom_type('FFI::Platypus::Type::StringArray' => 'string_array');
+
+Platypus' type system provides most of the common basic types that you 
+will need.  A few more specalized types require the use of custom types. 
+The first line uses the 'StringArray' custom type.
+
+ $ffi->type('unsigned int' => 'GLenum');
+
+The second line defines C<GLenum> used throughout the GL library.  
+Although you could just use C<'unsigned int'> throughout your code where 
+GLenum is called for, this makes my code more readable, and it is easier 
+to fix the type in one place if I make a mistake wiht C<GLenum>.
+
+In general, the type system for Platypus is a bit different than other 
+FFI implementations that I've used.  Instead of providing only basic 
+system types like "sixteen bit signed integer", Platypus encourages the 
+use of language and platform specific types--typically the same types 
+that are understood by your library interface specifications (In C the 
+header file).  For example C<long> is a 32 or 64 bit signed integer 
+depending on your platform and C<char> might be either signed or 
+unsigned!  You can even tell Platypus that you are working with Fortran 
+or Rust and use the native types of those languages in your bindings.
+
+Finally in the meat of the module we attach the functions from the 
+library into the GL namespace:
+
+ $ffi->attach( glEnable => ['GLenum'] => 'void' );
+ ...
+ glEnable(GL_LIGHT0);
+
+The C<attach> method takes a function defined in the dynamic library and 
+attaches it as a real Perl subroutine.  The advantage to this approach 
+is that the code that calls our GL library doesn't need to know or care 
+that it is using an FFI library or an XS one.
+
+Platypus also supports higher level types such as structs, and arrays:
+
+ $ffi->type('float[]' => 'GLfloat_array');
+ ...
+ $ffi->attach( glLightfv    => [ 'GLenum', 'GLenum',
+                                 'GLfloat_array' ] => 'void' );
+ ...
+ glLightfv(GL_LIGHT0, GL_DIFFUSE, [.9, .9, 1.0, 1.0]);
+ glLightfv(GL_LIGHT0, GL_POSITION, [1.0, 1.0, 1.0, 0.0]);
+
+Many FFI implementations require you to create an array object and pass 
+that in as an argument.  Unfortunately there is an overhead to creating 
+a objects for single use calls like this, and it also reveals too much 
+of the implementation to your caller.
+
+Finally, this module uses Exporter to export all of its functions to the 
+caller's namespace:
+
+ use base qw( Exporter );
+ ...
+ our @EXPORT = (grep /^(gl|GL_)/i, keys %GL::);
+
+Keeping C<@EXPORT> in sync with functions as we add them is very tedius, 
+so instead we use C<%GL::> which is a special hash that keeps track of 
+the data structures (including subroutines) in the namespace.  It has to 
+be put at the bottom of the file because otherwise %GL:: won't be 
+populated completely, until after all of the C<attach> methods are 
+called.
+
+The last piece of code is the GLUT bindings.  GLUT provides a simple and 
+portable OpenGL focused event loop for applications that do not require 
+anything more complicated.
+
+# GLUT.pm
+
+=cut
