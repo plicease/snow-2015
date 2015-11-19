@@ -28,26 +28,20 @@ package SnowflakeDraw {
     $segments //= $self->segments;
     
     glPushMatrix();
-
       glPushMatrix();
-
         glRotated(30, 0.0, 0.0, 1.0);
         $self->draw_branch($size/1.5, $size, int($segments/2)) if $segments > 1;
         $self->draw_twig(0.025, $size, 6);
         glRotated(-60, 0.0, 0.0, 1.0);
         $self->draw_branch($size/1.5, $size, int($segments/2)) if $segments > 1;
         $self->draw_twig(0.025, $size, 6);
-        
       glPopMatrix();
-      
       glTranslated(0.0, $left/($segments*.75), 0.0);
-
       $self->draw_branch(
         $size / 1.5,
         $left-$left/($segments*.75), 
         int($segments-1)
       ) if $segments > 1;
-
     glPopMatrix();
   }
 
@@ -55,7 +49,6 @@ package SnowflakeDraw {
     my($self) = @_;
     
     glPushMatrix();
-    
       glTranslated($self->x, $self->y, $self->z);
       glRotated($self->xspin, 1.0, 0.0, 0.0);
       glRotated($self->yspin, 0.0, 1.0, 0.0);
@@ -76,7 +69,6 @@ package SnowflakeDraw {
       }
       
       glPushMatrix();
-          
         glRotated(90, 1.0, 0.0, 0.0);
         $self->draw_branch($self->pinkie_length/1.25, $self->branch_length/1.25);
         glRotated(90, 0.0, 1.0, 0.0);
@@ -88,12 +80,10 @@ package SnowflakeDraw {
         glRotated(90, 0.0, 1.0, 0.0);
         $self->draw_branch($self->pinkie_length/1.25, $self->branch_length/1.25);
         $self->draw_twig(0.05, $self->branch_length/1.25, 12);
-          
       glPopMatrix();
 
       glDisable(GL_BLEND);
       glDisable(GL_COLOR_MATERIAL);
-    
     glPopMatrix();
   }
 
