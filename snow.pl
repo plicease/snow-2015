@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-use 5.012;
 use GL;
 use GLU;
 use GLUT;
