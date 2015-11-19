@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use GL;
-use GLU;
 use GLUT;
 use Snowflake;
 

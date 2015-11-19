@@ -75,6 +75,8 @@ $ffi->attach( glViewport   => [ 'GLint', 'GLint',
                                 'GLsizei', 'GLsizei' ] => 'void' );
 $ffi->attach( glBlendFunc  => [ 'GLenum', 'GLenum' ] => 'void' );
 $ffi->attach( glLoadIdentity => [] => 'void' );
+$ffi->attach( gluPerspective => ['GLdouble','GLdouble',
+                                 'GLdouble','GLdouble'] => 'void' );
 
 our @EXPORT = (grep /^(gl|GL_)/i, keys %GL::);
 
