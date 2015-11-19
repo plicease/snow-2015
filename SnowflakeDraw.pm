@@ -6,6 +6,7 @@ package SnowflakeDraw {
 
   use Moose::Role;
   use GL;
+  use GLUT;
   
   requires qw( 
     num_twigs pinkie_length branch_length segments

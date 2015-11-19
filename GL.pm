@@ -26,13 +26,9 @@ package GL {
     GL_SRC_ALPHA           => 0x0302,
     GL_ONE_MINUS_SRC_ALPHA => 0x0303,
     GL_COLOR_MATERIAL      => 0x0B57,
-
-    GLUT_RGB      => 0x0000,
-    GLUT_DOUBLE   => 0x0002,
-    GLUT_DEPTH    => 0x0010,
   };
   
-  my $ffi = FFI::Platypus->new(
+  our $ffi = FFI::Platypus->new(
     lib => [
       $^O eq 'darwin' ? (
         "/System/Library/Frameworks/OpenGL.framework/Libraries/libGL.dylib",
@@ -55,7 +51,6 @@ package GL {
   $ffi->type('unsigned int' => 'GLbitfield');
   $ffi->type('int' => 'GLsizei');
 
-  # GL
   $ffi->attach( glShadeModel => ['GLenum'] => 'void' );
   $ffi->attach( glEnable     => ['GLenum'] => 'void' );
   $ffi->attach( glDisable    => ['GLenum'] => 'void' );
@@ -75,42 +70,7 @@ package GL {
   $ffi->attach( glViewport => [ 'GLint', 'GLint', 'GLsizei', 'GLsizei' ] => 'void' );
   $ffi->attach( glBlendFunc => [ 'GLenum', 'GLenum' ] => 'void' );
 
-  # GLU
-  $ffi->attach( gluPerspective => ['GLdouble','GLdouble','GLdouble','GLdouble'] => 'void' );
-  
-  # GLUT
-  $ffi->attach( [ glutInit => '_glutInit' ] => ['int*', 'string_array' ] => 'void' );
-  
-  sub glutInit {
-    my $size = scalar @_;
-    _glutInit(\$size, \@_);
-  }
-  
-  $ffi->attach( glutInitDisplayMode => ['unsigned int'] => 'void' );
-  $ffi->attach( glutInitWindowSize  => ['int', 'int']   => 'void' );
-  $ffi->attach( glutCreateWindow    => ['string']       => 'int'  );
-  $ffi->attach( glutMainLoop        => [ ] => 'void' );
-  $ffi->attach( glutSwapBuffers     => [] => 'void' );
-  $ffi->attach( glutPostRedisplay   => [] => 'void' );
-  $ffi->attach( glutSolidCone        => [ 'GLdouble', 'GLdouble', 'GLint', 'GLint' ] => 'void' );
-  
-  $ffi->attach( glutDisplayFunc     => [ '()->void' ]        => 'void' => sub {
-    my($xsub, $callback) = @_;
-    state $closure = $ffi->closure($callback);
-    $xsub->($closure);
-  });
-  $ffi->attach( glutIdleFunc        => [ '()->void' ]        => 'void' => sub {
-    my($xsub, $callback) = @_;
-    state $closure = $ffi->closure($callback);
-    $xsub->($closure);
-  });
-  $ffi->attach( glutReshapeFunc     => [ '(int,int)->void' ] => 'void' => sub {
-    my($xsub, $callback) = @_;
-    state $closure = $ffi->closure($callback);
-    $xsub->($closure);
-  });
-  
-  our @EXPORT = (grep /^gl/i, keys %GL::);
+  our @EXPORT = (grep /^(gl|GL_)/i, keys %GL::);
 }
 
 1;

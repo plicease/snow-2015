@@ -2,6 +2,8 @@ use strict;
 use warnings;
 use 5.012;
 use GL;
+use GLU;
+use GLUT;
 use Snowflake;
 
 glutInit(@ARGV);
@@ -33,15 +35,9 @@ sub display {
 }
 
 sub idle {
-  $flakes[0]->xspin($flakes[0]->xspin + 0.3);
-  $flakes[0]->yspin($flakes[0]->yspin + 0.6);
-
-  $flakes[1]->xspin($flakes[1]->xspin + 0.3);
-  $flakes[1]->zspin($flakes[1]->zspin + 0.6);
-
-  $flakes[2]->yspin($flakes[2]->yspin + 0.3);
-  $flakes[2]->zspin($flakes[2]->zspin + 0.6);
-
+  $flakes[0]->spin(0.3, 0.6, 0.0);
+  $flakes[1]->spin(0.3, 0.0, 0.6);
+  $flakes[2]->spin(0.0, 0.3, 0.6);
   glutPostRedisplay();
 }
 

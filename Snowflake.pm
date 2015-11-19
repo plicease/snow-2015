@@ -8,6 +8,13 @@ package Snowflake {
 
   with 'SnowflakeModel';
   with 'SnowflakeDraw';
+
+  sub spin {
+    my($self, $xdelta, $ydelta, $zdelta) = @_;
+    $self->xspin($self->xspin+$xdelta);
+    $self->yspin($self->yspin+$ydelta);
+    $self->zspin($self->zspin+$zdelta);
+  }
   
 }
 
