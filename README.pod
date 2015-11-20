@@ -1,11 +1,12 @@
 =pod
 
-The boss, Mr. Claus asked me to whip up some decorations, and since this 
-is a modern outfit with the largest toy and child database in the world 
-cutting some paper snowflakes just wasn't going to cut it.  I decoded to 
-write a little Perl pogram to render some three dimensional snowflakes.  
-To that end, I started with a model to represent the physical 
-characteristics of each snowflake, using a Moose role.
+The boss (Mr. Claus) asked me to whip up some decorations, and since 
+this is a modern outfit (we have the the largest toy and child database 
+in the world), cutting some paper snowflakes just wasn't going to 
+impress.  I decoded to write a little Perl pogram to render three 
+dimensional snowflakes.  To that end, I started with a model to 
+represent the physical characteristics of each snowflake, using a Moose 
+role.
 
  package SnowflakeModel;
  
@@ -43,10 +44,9 @@ characteristics of each snowflake, using a Moose role.
  
  1;
 
-The model keeps track of the number of branches, and twigs (the "leaf" 
-node, but this being winter time the leaves have obviouslly fallen) and 
-the length of the pinkie twigs which are twigs eminating from the root 
-of te snowflake.
+The model keeps track of the number of branches, and twigs (it would be 
+the "leaf" node, but this being a winter party the leaves have 
+obviouslly fallen).
 
 The next step was to write some code to draw the snowflake.  After some 
 tweaking, I decided on a recursive algorithm using OpenGL.
@@ -138,7 +138,8 @@ tweaking, I decided on a recursive algorithm using OpenGL.
  
  1;
 
-Now I can combine the model and the draw logic into a single Moose class.
+OpenGL is a portable API for drawing 3D graphics with fancy effects.  Now
+I can combine the model and the draw logic into a single Moose class.
 
  package Snowflake;
  
@@ -156,16 +157,20 @@ Now I can combine the model and the draw logic into a single Moose class.
  
  1;
 
-Now if our snowflakes need to work with vendors that don't support 
-OpenGL, we can swap out different draw roles to replace this OpenGL one.
+I've been working on this team for a number of years, and we have 
+frequently had to switch vendors and change implementations many times 
+for various projects.  If I have to replace the OpenGL code in the 
+future, this separation of concerns helps ease the transition because 
+the model and draw logic are in separate files, reducing the temptation 
+of mixing them.
 
-In order to use The GL functions from Perl, I wrote some partial GL 
+In order to use The GL functions from Perl, I wrote a partial set of GL 
 bindings for Perl using FFI.  FFI is a technique for calling code in 
 dynamic libraries from a scripting language like Perl without writing 
 XS, which is tied closely to the internal implementation of Perl itself.
 
-We here at North Pole Inc. are big into FFI because we don't have many 
-XS programmers, but we often need to call into libraries written in 
+We here at North Pole Inc. are big users of FFI because we don't have 
+many XS programmers, and we often need to call into libraries written in 
 other languages which don't have XS bindings yet.  Last year we were 
 using L<FFI::Raw>, which at the time was the only practical FFI 
 available on CPAN.
@@ -259,10 +264,11 @@ Here are my bindings for the base OpenGL library:
  1;
 
 After the usual module imports, you can see the first thing that I've 
-defined a number of constants which are used by OpenGL.  For FFI there 
-really isn't any getting around this.  These constants are usually 
-defined in C header (.h) files.  So long as the library is stable and 
-the implementers are not feeling cruel this can be okay.
+defined are a number of constants which are used by OpenGL.  These 
+constants are usually defined in C header (.h) files.  This can be 
+problematic if the constants change frequently, but so long as the 
+library is stable and the implementers are not feeling cruel this can be 
+okay.
 
 The next peice of code creates an instance of L<FFI::Platypus> which we 
 will use to create the bindins to the library:
@@ -281,18 +287,20 @@ will use to create the bindins to the library:
    ],
  ); 
 
-We need to tell Platypus where to look for functions so we are using 
-L<FFI::ChecKLib>, which is a portable way of searching for system 
-libraries.  We have a mixed environment of OS X and Linux for toy 
-deliveries and testing, so it this had to work on both platforms.  
-Although L<FFI::CheckLib> works on both platforms (and others), the 
-OpenGL libraries on OS X are part of a "framework", which isn't 
-supported by L<FFI::CheckLib> yet, so I hard coded the location of the 
-libraries on that platform.
+We need to tell Platypus which dynamic libraries to search to find 
+functions, so we are using L<FFI::ChecKLib>, which is a portable way of 
+searching for libraries in the usual system locations.  We have a mixed 
+environment of OS X and Linux for toy deliveries and testing, so it this 
+had to work on both platforms.  Although L<FFI::CheckLib> generally 
+works well in Windows, Linux, OS X (and others), the OpenGL libraries on 
+OS X are part of what they call a "framework", which isn't supported by 
+L<FFI::CheckLib> yet, so I hard coded the location of the libraries on 
+that platform.
 
 The next part of the code defines the types used by the library:
 
  $ffi->type('unsigned int' => 'GLenum');
+ ...
 
 This line defines C<GLenum> used throughout the GL library.  
 Although you could just use C<'unsigned int'> throughout your code where 
@@ -301,10 +309,10 @@ to fix the type in one place if I make a mistake wiht C<GLenum>.
 
 In general, the type system for Platypus is a bit different than other 
 FFI implementations that I've used.  Instead of providing only basic 
-system types like "sixteen bit signed integer", Platypus encourages the 
-use of language and platform specific types--typically the same types 
-that are understood by your library interface specifications (In C the 
-header file).  For example C<long> is a 32 or 64 bit signed integer 
+haardware types like "sixteen bit signed integer", Platypus encourages 
+the use of language and platform specific types--typically the same 
+types that are understood by your library interface specifications (In C 
+the header file).  For example C<long> is a 32 or 64 bit signed integer 
 depending on your platform and C<char> might be either signed or 
 unsigned!  You can even tell Platypus that you are working with Fortran 
 or Rust and use the native types of those languages in your bindings.
@@ -314,14 +322,17 @@ library into the GL namespace:
 
  $ffi->attach( glEnable => ['GLenum'] => 'void' );
  ...
+ # which is called thusly:
  glEnable(GL_LIGHT0);
 
 The C<attach> method takes a function defined in the dynamic library and 
 attaches it as a real Perl subroutine.  The advantage to this approach 
 is that the code that calls our GL library doesn't need to know or care 
-that it is using an FFI library or an XS one.
+that it is using an FFI implementation or an XS one.  It just looks like 
+Perl.
 
-Platypus also supports higher level types such as structs, and arrays:
+I needed some higher level types, like arrays (Platypus also supports 
+structs or records to some extent):
 
  $ffi->type('float[]' => 'GLfloat_array');
  ...
@@ -333,8 +344,8 @@ Platypus also supports higher level types such as structs, and arrays:
 
 Many FFI implementations require you to create an array object and pass 
 that in as an argument.  Unfortunately there is an overhead to creating 
-a objects for single use calls like this, and it also reveals too much 
-of the implementation to your caller.
+a objects for single use calls like this, and it also exposes 
+unnecessary complexity to your caller.
 
 Finally, this module uses Exporter to export all of its functions to the 
 caller's namespace:
@@ -345,19 +356,20 @@ caller's namespace:
 
 Keeping C<@EXPORT> in sync with functions as we add them is very tedius, 
 so instead we use C<%GL::> which is a special hash that keeps track of 
-the data structures (including subroutines) in the namespace.  It has to 
-be put at the bottom of the file because otherwise %GL:: won't be 
-populated completely, until after all of the C<attach> methods are 
+the data structures (including subroutines) in the GL namespace.  It has 
+to be put at the bottom of the module because otherwise C<%GL::> won't 
+be populated completely, until after all of the C<attach> methods are 
 called.
 
-The last piece of code is the Glut bindings.  Glut provides a simple and 
-portable OpenGL focused event loop for applications that do not require 
-anything more complicated.
+The last module we need are the Glut bindings.  Glut provides a simple 
+and portable OpenGL focused event loop for applications that do not 
+require anything more complicated.
 
 # GLUT.pm
 
 A few things are interesting here.  Firstly, I use the same C<$ffi> 
-object here, mainly because Glut uses a number of GL types.
+object, mainly because Glut uses a number of GL types so I don't have to 
+define them twice.
 
  my $ffi = $GL::ffi;
 
@@ -374,20 +386,35 @@ argument.
 
 Platypus' type system provides most of the common basic types that you 
 will need.  A few more specalized types, like arrays of C strings 
-require the use of custom types written in Perl.  Here we are using 
-L<FFI::Platypus::Type::StringArray> which is frequently useful, but not 
-part of the Platypus core.
+require the use of custom types.  Here we are using 
+L<FFI::Platypus::Type::StringArray> which is frequently useful and 
+available on CPAN, but not part of the Platypus core.
 
-Also interesting here is that we are using a wrapper (specified as the 
-last argument in the attach call) around the subroutine created by 
-Platypus.  This is an interfacing issue, as in C if you have arrays that 
-can be of varying lengths you need to pass in the size of the array as a 
-separate parameter, but in Perl arrays know how many they contain.
+Also interesting here is that we are using a wrapper (the last argument 
+to the C<attach>) call.  This is to hide some of the messy differences 
+between C and Perl.  In C when you pass a dynamic array into a function 
+you have to provide the size of the array as an additional paramter.  In 
+Perl, arrays already know how many elements they have.  Basically the 
+above code is a short cut for this:
+
+ $ffi->attach( [ glutInit => '_glutInit] => 
+               ['int*', 'string_array' ] => 'void');
+ 
+ sub glutInit {
+   my(@args) = @_;
+   my $size = scalar @args;
+   _glutInit(\$size, \@args);
+ }
+
+In this second version we attach C<glutInit> with a different name in 
+Perl and call it from the "real" C<glutInit>.
 
 Also the size of the array is passed in as a pointer an integer so that 
 Glut can alter its value.  Although in this particular case we ignore 
 any changes made by Glut, the scalar C<$size> IS updated if C<glutInit> 
-makes a change to its value.  In many use cases this is very useful.
+makes a change.  This is frequently useful, because a common pattern in 
+C is to pass variables by reference by passing a pointer to that 
+variable.
 
 The last thing that I want to point out is the use of closures:
 
@@ -399,18 +426,25 @@ The last thing that I want to point out is the use of closures:
 
 Or calling back into Perl from C.  This is extremly usful, but it is 
 also a little tricky, because of the different ways that Perl and C 
-manage memory.  Essentially it comes down to this, in C you must 
-explicitly allocate and deallocate all memory.  The convention is that 
-the module that allocates a particular object will be responsible for 
-deallocating it.  In Perl the language itself takes responsability for 
-deallocating objects when they are no longer used anywhere in the Perl 
-runtime.  Unfortunately when we create a closure and pass it into Glut 
-code, there is no way for Perl to keep track of wether or not the 
-closure is still in use by Glut!  In this case I save the closure into a 
-C<state> variable, which will keep it in scope for the life of the 
-program (or until C<glutDisplayFunc> is called again).
+manage memory.  In C you must explicitly allocate and deallocate all 
+memory.  The convention is that the module that allocates a particular 
+object will be responsible for deallocating it as well.  In Perl the 
+language itself takes responsability for deallocating objects when they 
+are no longer used anywhere in the Perl runtime.  Unfortunately when we 
+create a closure and pass it into Glut code, there is no way for Perl to 
+keep track of wether or not the closure is still in use by Glut!  In 
+order to prevent Perl from reclaiming the subroutine before Glut is done 
+with it, I save the closure into a C<state> variable, which will keep it
+in scope for the life of the program.
 
-Now, finally I have three pretty snowflakes for the holiday party.
+Now we need to use this code from our main script:
+
+# INCLUDE: snow.pl
+
+Notice that thanks to the care of L<FFI::Platypus> and a few wrappers 
+our main script doesn't have to know or care that it is using FFI.
+
+I have three pretty snowflakes for the holiday party.
 
 =begin html
 
