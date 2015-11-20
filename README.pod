@@ -288,14 +288,16 @@ will use to create the bindins to the library:
  ); 
 
 We need to tell Platypus which dynamic libraries to search in order to 
-find functions, so we are using L<FFI::ChecKLib>, which is a portable 
-way of searching for libraries in the usual system locations.  We have a 
-mixed environment of OS X and Linux for toy deliveries and testing, so 
-it this had to work on both platforms.  Although L<FFI::CheckLib> 
-generally works well in Windows, Linux, OS X (and others), the OpenGL 
-libraries on OS X are part of what they call a "framework", which isn't 
-supported by L<FFI::CheckLib> yet, so I hard coded the location of the 
-libraries on that platform.
+find functions, so we are using L<FFI::CheckLib>, which is a portable 
+way of searching for libraries in the usual system locations.  It 
+provides a similar interface to the like-named L<Devel::CheckLib>, but 
+is smarter about fiding I<dynamic> libraries.  We have a mixed 
+environment of OS X and Linux for toy deliveries and testing, so it this 
+had to work on both platforms.  Although L<FFI::CheckLib> generally 
+works well in Windows, Linux, OS X (and others), the OpenGL libraries on 
+OS X are part of what they call a "framework", which isn't supported by 
+L<FFI::CheckLib> yet, so I hard coded the location of the libraries on 
+that platform.
 
 The next part of the code defines the types used by the library:
 
