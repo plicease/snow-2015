@@ -142,12 +142,12 @@ caller's namespace:
  ...
  our @EXPORT = (grep /^(gl|GL_)/i, keys %GL::);
 
-Keeping C<@EXPORT> in sync with functions as we add them is very tedius, 
-so instead we use C<%GL::> which is a special hash that keeps track of 
-the data structures (including subroutines) in the GL namespace.  It has 
-to be put at the bottom of the module because otherwise C<%GL::> won't 
-be populated completely, until after all of the C<attach> methods are 
-called.
+May libraries implement hundreds of function and keeping C<@EXPORT> in 
+sync with functions as we add them is very tedius, so instead we use 
+C<%GL::> which is a special hash that keeps track of the data structures 
+(including subroutines) in the GL namespace.  It has to be put at the 
+bottom of the module because otherwise C<%GL::> won't be populated 
+completely, until after all of the C<attach> methods are called.
 
 The last module we need are the Glut bindings.  Glut provides a simple 
 and portable OpenGL focused event loop for applications that do not 
