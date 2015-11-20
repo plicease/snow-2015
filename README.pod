@@ -357,7 +357,7 @@ caller's namespace:
  our @EXPORT = (grep /^(gl|GL_)/i, keys %GL::);
 
 May libraries implement hundreds of function and keeping C<@EXPORT> in 
-sync with functions as we add them is very tedius, so instead we use 
+sync with functions as we add them is very tedius.  Instead we use 
 C<%GL::> which is a special hash that keeps track of the data structures 
 (including subroutines) in the GL namespace.  It has to be put at the 
 bottom of the module because otherwise C<%GL::> won't be populated 
