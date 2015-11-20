@@ -191,12 +191,12 @@ above code is a short cut for this:
 In this second version we attach C<glutInit> with a different name in 
 Perl and call it from the "real" C<glutInit>.
 
-Also the size of the array is passed in as a pointer an integer so that 
-Glut can alter its value.  Although in this particular case we ignore 
-any changes made by Glut, the scalar C<$size> IS updated if C<glutInit> 
-makes a change.  This is frequently useful, because a common pattern in 
-C is to pass variables by reference by passing a pointer to that 
-variable.
+Also the size of the array is passed in as a pointer to an integer so 
+that Glut can alter its value.  Although in this particular case we 
+ignore any changes made by Glut, the scalar C<$size> IS updated if 
+C<glutInit> makes a change.  This is frequently useful, because a common 
+pattern in C is to pass variables by reference by passing a pointer to 
+that variable.
 
 The last thing that I want to point out is the use of closures:
 
