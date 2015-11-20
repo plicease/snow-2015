@@ -223,8 +223,9 @@ Now that we have all the ingredients, we can write out main script:
 
 # include: snow.pl
 
-Notice that thanks to the care of L<FFI::Platypus> and a few wrappers 
-our main script doesn't have to know or care that it is using FFI.
+Notice that thanks to the care of L<FFI::Platypus> and a few wrappers in 
+the C<GLUT> module, our main script doesn't have to know or care that it 
+is using FFI.
 
 I have three pretty snowflakes for the holiday party.
 
