@@ -219,9 +219,9 @@ order to prevent Perl from reclaiming the subroutine before Glut is done
 with it, I save the closure into a C<state> variable, which will keep it
 in scope for the life of the program.
 
-Now we need to use this code from our main script:
+Now that we have all the ingredients, we can write out main script:
 
-# INCLUDE: snow.pl
+# include: snow.pl
 
 Notice that thanks to the care of L<FFI::Platypus> and a few wrappers 
 our main script doesn't have to know or care that it is using FFI.
