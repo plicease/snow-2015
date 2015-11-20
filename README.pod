@@ -422,14 +422,8 @@ not require anything more complicated.
  
  1;
 
-A few things are interesting here.  Firstly, I use the same C<$ffi> 
-object, mainly because Glut uses a number of GL types so I don't have to 
-define them twice.
-
- my $ffi = $GL::ffi;
-
-Second, the C<glutInit()> takes an array of C strings as its second 
-argument.
+A few things are interesting here.  Firstly, the C<glutInit()> takes an 
+array of C strings as its second argument.
 
  $ffi->load_custom_type('FFI::Platypus::Type::StringArray' => 'string_array');
 
