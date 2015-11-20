@@ -363,9 +363,9 @@ C<%GL::> which is a special hash that keeps track of the data structures
 bottom of the module because C<%GL::> won't be populated until the 
 C<attach> calls are made.
 
-The last module we need are the Glut bindings.  Glut provides a simple 
-and portable OpenGL focused event loop for applications that do not 
-require anything more complicated.
+The last module we need provides the Glut bindings.  Glut provides a 
+simple and portable OpenGL focused event loop for applications that do 
+not require anything more complicated.
 
  package GLUT;
  
