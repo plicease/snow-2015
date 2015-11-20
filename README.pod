@@ -1,12 +1,12 @@
 =pod
 
-The boss (Mr. Claus) asked me to whip up some decorations, and since 
-this is a modern outfit (we have the the largest toy and child database 
-in the world), cutting some paper snowflakes just wasn't going to 
-impress.  I decoded to write a little Perl pogram to render three 
-dimensional snowflakes.  To that end, I started with a model to 
-represent the physical characteristics of each snowflake, using a Moose 
-role.
+The boss (Mr. Claus) asked me to whip up some decorations for the 
+holiday party, and since this is a modern outfit (we have the the 
+largest toy and child database in the world), cutting some paper 
+snowflakes just wasn't going to impress.  I decoded to write a little 
+Perl pogram to render three dimensional snowflakes.  To that end, I 
+started with a model to represent the physical characteristics of each 
+snowflake, using a Moose role.
 
  package SnowflakeModel;
  
