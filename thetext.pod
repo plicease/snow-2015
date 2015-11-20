@@ -90,10 +90,10 @@ The next part of the code defines the types used by the library:
  $ffi->type('unsigned int' => 'GLenum');
  ...
 
-This line defines C<GLenum> used throughout the GL library.  
-Although you could just use C<'unsigned int'> throughout your code where 
-GLenum is called for, this makes my code more readable, and it is easier 
-to fix the type in one place if I make a mistake wiht C<GLenum>.
+This line defines C<GLenum> used throughout the GL library.  Although 
+you could just use C<'unsigned int'> throughout your code where GLenum 
+is called for, this makes my code more readable, and it is easier to fix 
+the type in one place if I make a mistake with C<GLenum>.
 
 In general, the type system for Platypus is a bit different than other 
 FFI implementations that I've used.  Instead of providing only basic 
