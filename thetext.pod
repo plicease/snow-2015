@@ -119,8 +119,8 @@ is that the code that calls our GL library doesn't need to know or care
 that it is using an FFI implementation or an XS one.  It just looks like 
 Perl.
 
-I needed some higher level types, like arrays (Platypus also supports 
-structs or records to some extent):
+I needed some higher level types, like arrays (Platypus supports a 
+number of higher level types like this):
 
  $ffi->type('float[]' => 'GLfloat_array');
  ...
